@@ -1,0 +1,165 @@
+/* Basic resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #6f86d6, #48c6ef);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    padding: 20px; /* Add padding for smaller devices */
+}
+
+/* Hero section styling */
+.hero-section {
+    text-align: center;
+    color: #fff;
+    padding: 50px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 800px; /* Set a max width for larger screens */
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Button container styling */
+.platform-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap; /* Ensures buttons wrap on smaller screens */
+}
+
+/* Button styling */
+.button {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 50px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 200px; /* Button will scale with screen size */
+    text-align: center; /* Center the text inside the buttons */
+}
+
+.button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    z-index: 1;
+    transform: translate(-50%, -50%) scale(0);
+}
+
+.button:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.button:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Individual platform button colors */
+.youtube {
+    background-color: #FF0000;
+}
+
+.youtube:hover {
+    background-color: #cc0000;
+}
+
+.facebook {
+    background-color: #3b5998;
+}
+
+.facebook:hover {
+    background-color: #2d4373;
+}
+
+.instagram {
+    background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045);
+}
+
+.instagram:hover {
+    background: linear-gradient(45deg, #6e2695, #e62117, #e5a239);
+}
+
+.tiktok {
+    background-color: #010101;
+}
+
+.tiktok:hover {
+    background-color: #333;
+}
+
+/* Media Queries for Responsiveness */
+
+/* Adjust for tablets (max-width: 768px) */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .button {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+
+    .hero-section {
+        padding: 30px; /* Reduce padding for smaller screens */
+    }
+}
+
+/* Adjust for small devices (max-width: 480px) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+
+    .button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .platform-buttons {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 15px;
+    }
+
+    .hero-section {
+        padding: 20px; /* Reduce padding even more for very small screens */
+    }
+}

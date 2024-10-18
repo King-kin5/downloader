@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Video Downloader</title>
+    <link rel="stylesheet" href="/static/facebook.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/facebookicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/facebookicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/facebookicon/favicon-16x16.png">
+    <link rel="manifest" href="/static/facebookicon/site.webmanifest">
+</head>
+<body>
+    <div class="container">
+        <h1>Download Facebook Video</h1>
+        
+       <form action="/download_facebook_video" method="POST">
+        <label for="video_url">Enter Facebook Video URL:</label>
+        <input type="text" id="video_url" name="video_url" required>
+        <button type="submit">Download</button>
+        </form>
+        <div id="result"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Video Downloader</title>
+    <link rel="stylesheet" href="/static/tiktok.css">
+    <script>
+        function showComingSoon() {
+            alert('Coming Soon!');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Download TikTok Video</h1>
+        
+        <form action="/download_tiktok_video" method="POST" onsubmit="showComingSoon(); return false;">
+            <label for="video_url">Enter TikTok Video URL:</label>
+            <input type="text" id="video_url" name="video_url" required>
+            <button type="submit">Download</button>
+        </form>
+        <div id="result"></div>
+    </div>
+</body>
+</html>

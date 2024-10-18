@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IG Video Downloader (Dark Mode)</title>
+    <link rel="stylesheet" href="/static/IG.css">
+    <script>
+        function showComingSoon() {
+            alert('Coming Soon!');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Download IG Video</h1>
+        
+        <form action="/download_IG_video" method="POST" onsubmit="showComingSoon(); return false;">
+            <label for="video_url">Enter IG Video URL:</label>
+            <input type="text" id="video_url" name="video_url" required>
+            <button type="submit">Download</button>
+        </form>
+        <div id="result"></div>
+    </div>
+</body>
+</html>

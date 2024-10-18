@@ -1,0 +1,88 @@
+/* Basic resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #000; /* Black background for TikTok theme */
+    color: white; /* White text for contrast */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #1C1C1E; /* Dark container background */
+    padding: 40px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #FF0050; /* TikTok red-pink */
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1.2rem;
+    display: block;
+    margin-bottom: 10px;
+    color: #E6E6E6; /* Light grey label */
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 50px; /* Rounded input for modern look */
+    font-size: 1rem;
+    background-color: #333; /* Dark input background */
+    color: white;
+    text-align: center;
+    outline: none;
+    transition: background-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    background-color: #444;
+    border: 1px solid #FF0050; /* Border on focus with TikTok red */
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    background-color: #FF0050; /* TikTok red-pink */
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 6px 12px rgba(255, 0, 80, 0.4); /* Subtle shadow */
+}
+
+button:hover {
+    background-color: #FF3366; /* Lighter red on hover */
+    box-shadow: 0 10px 20px rgba(255, 0, 80, 0.6);
+    transform: translateY(-3px); /* Lift on hover */
+}
+
+button:active {
+    transform: translateY(2px); /* Pressed effect */
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #E6E6E6;
+}

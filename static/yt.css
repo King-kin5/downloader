@@ -1,0 +1,124 @@
+/* Basic resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    border-top: 5px solid #FF0000; /* YouTube red bar */
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1.2rem;
+    color: #606060;
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #FF0000; /* YouTube red */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+    outline: none;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+button {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    border: none;
+    border-radius: 50px; /* Rounded button for modern look */
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    background-image: linear-gradient(145deg, #FF4D4D, #FF0000); /* Gradient effect */
+}
+
+button:hover {
+    transform: translateY(-3px); /* Hover lift */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+    background-image: linear-gradient(145deg, #FF6363, #E60000); /* Lighter gradient on hover */
+}
+
+button:active {
+    transform: translateY(2px); /* Pressed button effect */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* Decrease shadow on click */
+}
+
+button[type="submit"]:last-child {
+    background-image: linear-gradient(145deg, #333, #111); /* Dark gradient for video button */
+}
+
+button[type="submit"]:last-child:hover {
+    background-image: linear-gradient(145deg, #444, #222); /* Lighter gradient on hover */
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+.format-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: white;
+}
+

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader</title>
+    <link rel="stylesheet" href="/static/yt.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/youtubeicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/youtubeicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/youtubeicon/favicon-16x16.png">
+    <link rel="manifest" href="/static/youtubeicon/site.webmanifest">
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Video Downloader</h1>
+        <form action="/download_youtube_audio" method="POST">
+            <label for="youtube-url">Enter YouTube URL:</label>
+            <input type="text" id="youtube-url" name="youtube_url" required>
+            <div class="buttons">
+                <button type="submit" formaction="/download_youtube_audio">Download Audio</button>
+                <button type="submit" formaction="/download_youtube_video">Download Video</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>                                                                                                                                       
