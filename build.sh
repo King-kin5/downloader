@@ -16,13 +16,13 @@ rm google-chrome-stable_current_amd64.deb
 echo "Installing ChromeDriver..."
 CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
 wget https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
-unzip chromedriver_linux64.zip -d /tmp/chromedriver/
+unzip chromedriver_linux64.zip -d /tmp/
+mv /tmp/chromedriver /usr/bin/chromedriver || echo "Failed to move ChromeDriver"
 rm chromedriver_linux64.zip
 
-# Move ChromeDriver to a writable location and ensure it has execute permissions
-mv /tmp/chromedriver/chromedriver /usr/local/bin/
-chmod +x /usr/local/bin/chromedriver
+# Ensure ChromeDriver has execute permissions
+chmod +x /usr/bin/chromedriver || echo "Failed to set execute permissions"
 
 # Display installed versions
-google-chrome --version
-chromedriver --version
+google-chrome --version || echo "Google Chrome not found"
+chromedriver --version || echo "ChromeDriver not found"
