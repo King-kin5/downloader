@@ -94,9 +94,11 @@ def internal_error(error):
 
 @app.route('/download_youtube_video', methods=['POST'])
 def download_youtube_video():
+    app.logger.info(f"Form data received: {request.form}") 
     try:
         video_url = request.form.get('video_url')
         if not video_url:
+            app.logger.error("No URL provided in form data")
             return "No URL provided", 400
 
         downloader = YouTubeDownloader()
@@ -134,9 +136,11 @@ def download_youtube_video():
 
 @app.route('/download_youtube_audio', methods=['POST'])
 def download_youtube_audio():
+    app.logger.info(f"Form data received: {request.form}")
     try:
         video_url = request.form.get('video_url')
         if not video_url:
+            app.logger.error("No URL provided in form data")
             return "No URL provided", 400
 
         downloader = YouTubeDownloader()

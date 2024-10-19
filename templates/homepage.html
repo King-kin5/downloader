@@ -25,5 +25,50 @@
             </div>
         </div>
     </div>
+    <script>
+        function showStatus(message, isError = false) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'error' : 'success';
+        }
+
+        async function downloadContent(url, isAudio = false) {
+            try {
+                showStatus('Starting download...');
+                
+                const formData = new FormData();
+                formData.append('video_url', document.getElementById('videoUrl').value);
+
+                const response = await axios({
+                    method: 'post',
+                    url: isAudio ? '/download_youtube_audio' : '/download_youtube_video',
+                    data: formData,
+                    responseType: 'blob'
+                });
+
+                // Create and click a temporary download link
+                const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', 'download.' + (isAudio ? 'mp3' : 'mp4'));
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                showStatus('Download completed successfully!');
+            } catch (error) {
+                console.error('Download error:', error);
+                showStatus(error.response?.data || 'An error occurred during download', true);
+            }
+        }
+
+        function downloadVideo() {
+            downloadContent('/download_youtube_video', false);
+        }
+
+        function downloadAudio() {
+            downloadContent('/download_youtube_audio', true);
+        }
+    </script>
 </body>
 </html>
