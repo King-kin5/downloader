@@ -7,6 +7,12 @@ import os
 
 app = Flask(__name__)
 
+import yt_dlp
+from flask import current_app as app
+import traceback
+import requests
+import os
+
 class YouTubeDownloader:
     def __init__(self, link):
         self.link = link
@@ -14,18 +20,19 @@ class YouTubeDownloader:
             'quiet': True,
             'no_warnings': True,
             'nocheckcertificate': True,
-            'cookiesfrombrowser': ('chrome',),  # Try to use Chrome cookies
+            'format': 'bestaudio/best',  # Default format
             'extractor_args': {
                 'youtube': {
-                    'player_client': ['android'],
-                    'player_skip': ['webpage'],
+                    'player_client': ['android', 'web'],
+                    'player_skip': ['webpage', 'config', 'js'],
                 }
             },
             'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Android 12; Mobile; rv:68.0) Gecko/68.0 Firefox/68.0',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language': 'en-us,en;q=0.5',
                 'Sec-Fetch-Mode': 'navigate',
+                'Referer': 'https://www.youtube.com/'
             }
         }
 
@@ -36,11 +43,11 @@ class YouTubeDownloader:
         
         ydl_opts = {
             **self.base_options,
-            'format': 'bestaudio/best',
+            'format': 'bestaudio[ext=m4a]/bestaudio/best',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
-            }],
+            }]
         }
         
         try:
@@ -53,6 +60,10 @@ class YouTubeDownloader:
                 
                 formats = info.get('formats', [])
                 audio_formats = [f for f in formats if f.get('acodec') != 'none' and f.get('vcodec') == 'none']
+                
+                if not audio_formats:
+                    # Fallback to best format if no audio-only format is found
+                    audio_formats = [f for f in formats if f.get('acodec') != 'none']
                 
                 if not audio_formats:
                     raise ValueError("No audio formats found")
@@ -85,7 +96,7 @@ class YouTubeDownloader:
         
         ydl_opts = {
             **self.base_options,
-            'format': 'best[height<=720]',
+            'format': 'best[height<=720]/bestvideo[height<=720]+bestaudio/best[height<=720]/best'
         }
         
         try:
@@ -95,13 +106,16 @@ class YouTubeDownloader:
                     raise ValueError("Unable to extract video information")
                 
                 title = "".join(c for c in info.get('title', 'video') if c.isalnum() or c in (' ', '-', '_')).rstrip()
-                formats = info.get('formats', [])
                 
-                if not formats:
-                    raise ValueError("No formats available for this video")
+                # Get the selected format
+                format_id = info.get('format_id')
+                formats = info.get('formats', [])
+                selected_format = next((f for f in formats if f.get('format_id') == format_id), None)
+                
+                if not selected_format:
+                    raise ValueError("No suitable format found")
 
-                best_format = formats[-1]  # yt-dlp sorts formats by quality
-                video_url = best_format['url']
+                video_url = selected_format['url']
                 
                 def generate():
                     try:
