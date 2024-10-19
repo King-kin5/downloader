@@ -4,11 +4,13 @@ from config import API_URL
 import requests
 from io import BytesIO
 from downloader.utils import sanitize_title
-from downloader.Youtube import YouTubeDownloader
+from downloader.Youtube import YouTubeDownloader, log_download, rate_limit_by_url, validate_youtube_url
 import logging
 import traceback
 import os
-
+from flask_limiter.util import get_remote_address
+from flask_limiter import  Limiter
+import time
 app = Flask(__name__, static_folder='static',
 template_folder='templates')
 logging.basicConfig(level=logging.INFO)
@@ -95,26 +97,32 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 @app.route('/download_youtube_audio', methods=['POST'])
+@Limiter.limit("30/hour;200/day")
+@rate_limit_by_url
+@log_download
 def download_youtube_audio():
     try:
         video_url = request.form.get('youtube_url')
+        validate_youtube_url(video_url)
         
-        if not video_url:
-            app.logger.error("No video URL provided")
-            return "No video URL provided", 400
-            
         downloader = YouTubeDownloader(video_url)
         generate, title = downloader.stream_audio()
+        
+        safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        filename = f"{safe_title}_{int(time.time())}.mp3"
         
         response = Response(
             stream_with_context(generate()),
             headers={
-                "Content-Disposition": f'attachment; filename="{title}.mp3"',
+                "Content-Disposition": f'attachment; filename="{filename}"',
                 "Content-Type": "audio/mpeg",
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
             }
         )
         return response
-
+    
     except ValueError as e:
         app.logger.error(f"ValueError in download_youtube_audio: {str(e)}")
         return str(e), 400
@@ -124,9 +132,13 @@ def download_youtube_audio():
         return "An error occurred while processing your request", 500
 
 @app.route('/download_youtube_video', methods=['POST'])
+@Limiter.limit("30/hour;150/day")
+@rate_limit_by_url
+@log_download
 def download_youtube_video():
     try:
         video_url = request.form.get('youtube_url')
+        validate_youtube_url(video_url)
         
         if not video_url:
             app.logger.error("No video URL provided")
@@ -135,11 +147,18 @@ def download_youtube_video():
         downloader = YouTubeDownloader(video_url)
         generate, title = downloader.stream_video()
         
+        safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        filename = f"{safe_title}_{int(time.time())}.mp4"
+        
         response = Response(
             stream_with_context(generate()),
             headers={
-                "Content-Disposition": f'attachment; filename="{title}.mp4"',
+                "Content-Disposition": f'attachment; filename="{filename}"',
                 "Content-Type": "video/mp4",
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
+                "X-Content-Type-Options": "nosniff"
             }
         )
         return response
