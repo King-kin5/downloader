@@ -96,93 +96,85 @@ def not_found_error(error):
 def internal_error(error):
     return render_template('500.html'), 500
 
-@app.route('/download_youtube_audio', methods=['POST'])
-@log_download
-def download_youtube_audio():
-    try:
-        video_url = request.form.get('youtube_url')
-        app.logger.info(f"Received URL: {video_url}")
-        
-        validate_youtube_url(video_url)
-        app.logger.info("YouTube URL validated successfully.")
-        
-        downloader = YouTubeDownloader(video_url)
-        app.logger.info("Initialized YouTubeDownloader.")
-        
-        generate, title = downloader.stream_audio()
-        app.logger.info(f"Audio stream generated for title: {title}")
-        
-        safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).rstrip()
-        app.logger.info(f"Sanitized title for filename: {safe_title}")
-        
-        filename = f"{safe_title}_{int(time.time())}.mp3"
-        app.logger.info(f"Final filename: {filename}")
-        
-        response = Response(
-            stream_with_context(generate()),
-            headers={
-                "Content-Disposition": f'attachment; filename="{filename}"',
-                "Content-Type": "audio/mpeg",
-                "Cache-Control": "no-cache, no-store, must-revalidate",
-                "Pragma": "no-cache",
-                "Expires": "0"
-            }
-        )
-        app.logger.info("Response created successfully.")
-        return response
-
-    except ValueError as e:
-        app.logger.error(f"ValueError in download_youtube_audio: {str(e)}")
-        return str(e), 400
-    except Exception as e:
-        app.logger.error(f"Error in download_youtube_audio: {str(e)}")
-        app.logger.error(traceback.format_exc())
-        return "An error occurred while processing your request", 500
-
-
 @app.route('/download_youtube_video', methods=['POST'])
-@log_download
 def download_youtube_video():
     try:
-        video_url = request.form.get('youtube_url')
-        app.logger.info(f"Received URL: {video_url}")
-        validate_youtube_url(video_url)
-        app.logger.info("YouTube URL validated successfully.")
-        
-        downloader = YouTubeDownloader(video_url)
-        app.logger.info("Initialized YouTubeDownloader.")
-        
-        generate, title = downloader.stream_video()
-        app.logger.info(f"Video stream generated for title: {title}")
-        
-        safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).rstrip()
-        app.logger.info(f"Sanitized title for filename: {safe_title}")
-        
-        filename = f"{safe_title}_{int(time.time())}.mp4"
-        app.logger.info(f"Final filename: {filename}")
-        
-        response = Response(
-            stream_with_context(generate()),
-            headers={
-                "Content-Disposition": f'attachment; filename="{filename}"',
-                "Content-Type": "video/mp4",
-                "Cache-Control": "no-cache, no-store, must-revalidate",
-                "Pragma": "no-cache",
-                "Expires": "0",
-                "X-Content-Type-Options": "nosniff"
-            }
-        )
-        app.logger.info("Response created successfully.")
-        return response
+        video_url = request.form.get('video_url')
+        if not video_url:
+            return "No URL provided", 400
 
-    except ValueError as e:
-        app.logger.error(f"ValueError in download_youtube_video: {str(e)}")
-        return str(e), 400
+        downloader = YouTubeDownloader()
+        download_url, filename, error = downloader.prepare_download_url(video_url)
+
+        if error:
+            return f"Error: {error}", 400
+
+        if not download_url:
+            return "Error: Unable to fetch video data", 400
+
+        try:
+            response = downloader.get_download_stream(download_url)
+            
+            video_buffer = BytesIO()
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    video_buffer.write(chunk)
+
+            video_buffer.seek(0)
+
+            return send_file(
+                video_buffer,
+                as_attachment=True,
+                download_name=filename,
+                mimetype='video/mp4'
+            )
+
+        except requests.RequestException as e:
+            return f"Error occurred while downloading video: {e}", 500
+
     except Exception as e:
         app.logger.error(f"Error in download_youtube_video: {str(e)}")
-        app.logger.error(traceback.format_exc())
         return "An error occurred while processing your request", 500
 
+@app.route('/download_youtube_audio', methods=['POST'])
+def download_youtube_audio():
+    try:
+        video_url = request.form.get('video_url')
+        if not video_url:
+            return "No URL provided", 400
+
+        downloader = YouTubeDownloader()
+        download_url, filename, error = downloader.prepare_download_url(video_url, audio_only=True)
+
+        if error:
+            return f"Error: {error}", 400
+
+        if not download_url:
+            return "Error: Unable to fetch audio data", 400
+
+        try:
+            response = downloader.get_download_stream(download_url)
+            
+            audio_buffer = BytesIO()
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    audio_buffer.write(chunk)
+
+            audio_buffer.seek(0)
+
+            return send_file(
+                audio_buffer,
+                as_attachment=True,
+                download_name=filename,
+                mimetype='audio/mpeg'
+            )
+
+        except requests.RequestException as e:
+            return f"Error occurred while downloading audio: {e}", 500
+
+    except Exception as e:
+        app.logger.error(f"Error in download_youtube_audio: {str(e)}")
+        return "An error occurred while processing your request", 500
 
 @app.route('/download_facebook_video', methods=['POST'])
 def download_facebook_video():
