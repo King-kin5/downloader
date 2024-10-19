@@ -16,10 +16,11 @@ rm google-chrome-stable_current_amd64.deb
 echo "Installing ChromeDriver..."
 CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
 wget https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
-unzip chromedriver_linux64.zip -d /usr/local/bin/
+unzip chromedriver_linux64.zip -d /tmp/chromedriver/
 rm chromedriver_linux64.zip
 
-# Ensure ChromeDriver has execute permissions
+# Move ChromeDriver to a writable location and ensure it has execute permissions
+mv /tmp/chromedriver/chromedriver /usr/local/bin/
 chmod +x /usr/local/bin/chromedriver
 
 # Display installed versions
