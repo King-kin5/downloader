@@ -17,11 +17,14 @@ echo "Installing ChromeDriver..."
 CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
 wget https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
 unzip chromedriver_linux64.zip -d /tmp/
-mv /tmp/chromedriver /usr/bin/chromedriver || echo "Failed to move ChromeDriver"
+mv /tmp/chromedriver /opt/chromedriver || echo "Failed to move ChromeDriver"
 rm chromedriver_linux64.zip
 
 # Ensure ChromeDriver has execute permissions
-chmod +x /usr/bin/chromedriver || echo "Failed to set execute permissions"
+chmod +x /opt/chromedriver || echo "Failed to set execute permissions"
+
+# Add ChromeDriver to PATH
+export PATH=$PATH:/opt
 
 # Display installed versions
 google-chrome --version || echo "Google Chrome not found"
