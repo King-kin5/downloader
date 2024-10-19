@@ -97,8 +97,6 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 @app.route('/download_youtube_audio', methods=['POST'])
-@Limiter.limit("30/hour", limit_value=200) 
-@rate_limit_by_url
 @log_download
 def download_youtube_audio():
     try:
@@ -132,8 +130,6 @@ def download_youtube_audio():
         return "An error occurred while processing your request", 500
 
 @app.route('/download_youtube_video', methods=['POST'])
-@Limiter.limit("30/hour",limit_value=150)
-@rate_limit_by_url
 @log_download
 def download_youtube_video():
     try:
