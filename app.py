@@ -101,13 +101,22 @@ def internal_error(error):
 def download_youtube_audio():
     try:
         video_url = request.form.get('youtube_url')
+        app.logger.info(f"Received URL: {video_url}")
+        
         validate_youtube_url(video_url)
+        app.logger.info("YouTube URL validated successfully.")
         
         downloader = YouTubeDownloader(video_url)
+        app.logger.info("Initialized YouTubeDownloader.")
+        
         generate, title = downloader.stream_audio()
+        app.logger.info(f"Audio stream generated for title: {title}")
         
         safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        app.logger.info(f"Sanitized title for filename: {safe_title}")
+        
         filename = f"{safe_title}_{int(time.time())}.mp3"
+        app.logger.info(f"Final filename: {filename}")
         
         response = Response(
             stream_with_context(generate()),
@@ -119,8 +128,9 @@ def download_youtube_audio():
                 "Expires": "0"
             }
         )
+        app.logger.info("Response created successfully.")
         return response
-    
+
     except ValueError as e:
         app.logger.error(f"ValueError in download_youtube_audio: {str(e)}")
         return str(e), 400
@@ -129,22 +139,27 @@ def download_youtube_audio():
         app.logger.error(traceback.format_exc())
         return "An error occurred while processing your request", 500
 
+
 @app.route('/download_youtube_video', methods=['POST'])
 @log_download
 def download_youtube_video():
     try:
         video_url = request.form.get('youtube_url')
+        app.logger.info(f"Received URL: {video_url}")
         validate_youtube_url(video_url)
+        app.logger.info("YouTube URL validated successfully.")
         
-        if not video_url:
-            app.logger.error("No video URL provided")
-            return "No video URL provided", 400
-            
         downloader = YouTubeDownloader(video_url)
+        app.logger.info("Initialized YouTubeDownloader.")
+        
         generate, title = downloader.stream_video()
+        app.logger.info(f"Video stream generated for title: {title}")
         
         safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        app.logger.info(f"Sanitized title for filename: {safe_title}")
+        
         filename = f"{safe_title}_{int(time.time())}.mp4"
+        app.logger.info(f"Final filename: {filename}")
         
         response = Response(
             stream_with_context(generate()),
@@ -157,6 +172,7 @@ def download_youtube_video():
                 "X-Content-Type-Options": "nosniff"
             }
         )
+        app.logger.info("Response created successfully.")
         return response
 
     except ValueError as e:
@@ -166,6 +182,7 @@ def download_youtube_video():
         app.logger.error(f"Error in download_youtube_video: {str(e)}")
         app.logger.error(traceback.format_exc())
         return "An error occurred while processing your request", 500
+
 
 @app.route('/download_facebook_video', methods=['POST'])
 def download_facebook_video():
