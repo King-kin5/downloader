@@ -4,13 +4,9 @@ from config import API_URL
 import requests
 from io import BytesIO
 from downloader.utils import sanitize_title
-from downloader.Youtube import YouTubeDownloader, log_download, rate_limit_by_url, validate_youtube_url
+from downloader.Youtube import YouTubeDownloader
 import logging
-import traceback
 import os
-from flask_limiter.util import get_remote_address
-from flask_limiter import  Limiter
-import time
 app = Flask(__name__, static_folder='static',
 template_folder='templates')
 logging.basicConfig(level=logging.INFO)

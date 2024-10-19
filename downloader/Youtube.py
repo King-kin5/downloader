@@ -1,7 +1,5 @@
 import yt_dlp
 import requests
-from io import BytesIO
-from tqdm import tqdm
 from .utils import sanitize_title
 import logging
 
