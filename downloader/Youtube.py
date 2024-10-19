@@ -285,8 +285,8 @@ class YouTubeDownloader:
                 raise
 
         return generate
-
 def validate_youtube_url(url):
+    app.logger.info(f"Received URL: {url}")
     """Validate YouTube URL format"""
     if not url:
         raise ValueError("No URL provided")
@@ -301,6 +301,7 @@ def validate_youtube_url(url):
             raise ValueError("Invalid YouTube video URL format")
     except Exception:
         raise ValueError("Invalid URL format")
+
 
 def rate_limit_by_url(func):
     """Custom decorator for per-URL rate limiting"""
