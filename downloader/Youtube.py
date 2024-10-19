@@ -286,20 +286,50 @@ class YouTubeDownloader:
 
         return generate
 def validate_youtube_url(url):
-    app.logger.info(f"Received URL: {url}")
-    """Validate YouTube URL format"""
+    """Validate YouTube URL format including support for Shorts"""
+    app.logger.info(f"Validating URL: {url}")
+    
     if not url:
         raise ValueError("No URL provided")
     
-    valid_domains = ['youtube.com', 'youtu.be', 'www.youtube.com']
+    valid_domains = ['youtube.com', 'youtu.be', 'www.youtube.com', 'm.youtube.com']
+    
     try:
-        from urllib.parse import urlparse
+        from urllib.parse import urlparse, parse_qs
         parsed = urlparse(url)
+        
+        # Check if domain is valid
         if parsed.netloc not in valid_domains:
             raise ValueError("Invalid YouTube URL")
-        if 'watch?v=' not in url and 'youtu.be/' not in url:
-            raise ValueError("Invalid YouTube video URL format")
-    except Exception:
+            
+        # Handle different YouTube URL formats
+        if 'watch?v=' in url:
+            # Regular YouTube video
+            video_id = parse_qs(parsed.query).get('v', [None])[0]
+            if not video_id:
+                raise ValueError("Invalid YouTube video URL format")
+        elif 'youtu.be/' in url:
+            # Shortened YouTube URL
+            video_id = parsed.path.split('/')[-1]
+            if not video_id:
+                raise ValueError("Invalid shortened YouTube URL format")
+        elif '/shorts/' in url:
+            # YouTube Shorts
+            video_id = parsed.path.split('/shorts/')[-1].split('?')[0]
+            if not video_id:
+                raise ValueError("Invalid YouTube Shorts URL format")
+        else:
+            raise ValueError("Unsupported YouTube URL format")
+            
+        # Additional validation for video ID format
+        if not video_id or len(video_id) < 8:
+            raise ValueError("Invalid video ID format")
+            
+        app.logger.info(f"URL validation successful. Video ID: {video_id}")
+        return True
+        
+    except Exception as e:
+        app.logger.error(f"URL validation failed: {str(e)}")
         raise ValueError("Invalid URL format")
 
 
